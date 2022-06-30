@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="Fast-Vid2Vid: Spatial-Temporal Compression for Video-to-Video Synthesis">
+  <meta name="keywords" content="Nerfies, D-NeRF, NeRF">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fast-Vid2Vid: Spatial-Temporal Compression for Video-to-Video Synthesis</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <script src="https://kit.fontawesome.com/ec39017701.js" crossorigin="anonymous"></script>
+
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+<body>
+  <div id="loading">
+    <div class="loader"></div>
+    <!-- <img id="loading-image" src="path/to/ajax-loader.gif" alt="Loading..." /> -->
+  </div>
+
+
+
+  <!-- <script> magnify("myimage", 3); </script> -->
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Fast-Vid2Vid: Spatial-Temporal Compression for Video-to-Video Synthesis</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <h3 style="color:#094879;">Arxiv</h3>
+
+                <span class="author-block">
+                  <a href="mailto:zhuolong@pjlab.org.cn" target="_blank">Long Zhuo</a><sup>1</sup>, </span>
+                <span class="author-block">
+                  <a href="https://wanggcong.github.io/" target="_blank">Guangcong Wang</a><sup>2</sup>, </span>
+                <span class="author-block">
+                  <a href="mailto:lishikai@sensetime.com" target="_blank">Shikai Li</a><sup>3</sup>, </span>
+                <!--&#8224-->
+                <span class="author-block">
+                  <a href="https://dblp.org/pid/50/8731.html" target="_blank">Wayne Wu</a><sup>1,3</sup>,
+                </span>
+                <span class="author-block">
+                  <a href="https://liuziwei7.github.io/" target="_blank">Ziwei Liu</a><sup>2 ✉</sup>
+                </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Shanghai AI Laboratory, </span>
+              <span class="author-block"><sup>2</sup>S-Lab, Nanyang Technological University, </span>
+              <span class="author-block"><sup>3</sup>SenseTime Research </span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <!-- PDF Link. -->
+                <!-- <span class="link-block">
+                <a href="" target="_blank"
+                   class="external-link button is-normal is-rounded is-dark inactiveLink">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span> -->
+                <span class="link-block">
+                  <a href="to-be-loaded" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>Arxiv</span>
+                  </a>
+                </span>
+                <!-- Video Link. -->
+                <span class="link-block">
+                  <a href="to-be-loaded" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                    </span>
+                    <span>Video</span>
+                  </a>
+                </span>
+                <!-- Code Link. -->
+                <span class="link-block">
+                  <a href="to-be-loaded" target="_blank"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>GitHub (Coming Soon)</span>
+                  </a>
+                </span>
+                <!-- Dataset Link. 
+
+                <span class="link-block">
+                  <a href="" class="external-link button is-normal is-rounded is-dark inactiveLink">
+                    <span class="icon">
+                      <i class="far fa-images"></i>
+                    </span>
+                    <span>Data (To be Released)</span>
+                  </a>
+                  -->
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <br><br>
+  <!-- Teaser Picture -->
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <!-- <img class="thumbnail" src="static/images/demo_V5_thumbnails-min_nobg.png" style="width:120%; margin-bottom:20px"> -->
+        <!-- <div class="img-magnifier-container">
+        <img id="magnifyimg" src="static/images/demo_V5_thumbnails-min_nobg.png" style="width:100%; margin-bottom:20px">
+      </div> -->
+
+        <a href="" target="_blank">
+          <img class="cover" id="mag" src="./static/images/Fig1.jpg"
+            style="width:800px; margin-bottom:20px">
+          <!-- <img class="cover" id="mag"  src="https://images.alphacoders.com/108/1086836.jpg" style="width:100%; margin-bottom:20px"> -->
+        </a>
+        <!-- <h3 class="has-text-centered">Hover mouse over the image for a zoomed-in view.</h3> -->
+        <!-- <script>
+        magnify("mag", 3);
+      </script> -->
+      </div>
+    </div>
+
+  </section>
+
+
+  <!-- Abstract. -->
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Video-to-Video synthesis (Vid2Vid) has achieved remarkable results in generating a photo-realistic video from a sequence of semantic maps. However, this pipeline suffers from high computational cost and long inference latency, which largely depends on two essential factors: 1) network architecture parameters, 2) sequential data stream. Recently, the parameters of image-based generative models have been significantly compressed via more efficient network architectures. Nevertheless, existing methods mainly focus on slimming network architectures and ignore the size of the sequential data stream. Moreover, due to the lack of temporal coherence, image-based compression is not sufficient for the compression of the video task. In this paper, we present a spatial-temporal compression framework, <b>Fast-Vid2Vid</b>, which focuses on data aspects of generative models. It makes the first attempt at time dimension to reduce computational resources and accelerate inference. Specifically, we compress the input data stream spatially and reduce the temporal redundancy. After the proposed spatial-temporal knowledge distillation, our model can synthesize key-frames using the low-resolution data stream. Finally, Fast-Vid2Vid interpolates intermediate frames by motion compensation with slight latency. On standard benchmarks, Fast-Vid2Vid achieves around real-time performance as 20 FPS and saves around 8&times computational cost on a single V100 GPU.
+            </p>
+          </div>
+        </div>
+      </div>
+  </section>
+  <!--/ Abstract. -->
+
+
+
+
+
+  <h3 class="title is-4 has-text-centered">Pipeline</h3>
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <a href="" target="_blank">
+          <img class="cover" id="mag" src="./static/images/pipeline.jpg"
+            style="width:800px; margin-bottom:20px">
+          <!-- <img class="cover" id="mag"  src="https://images.alphacoders.com/108/1086836.jpg" style="width:100%; margin-bottom:20px"> -->
+        </a>
+        <!-- <h3 class="has-text-centered">Hover mouse over the image for a zoomed-in view.</h3> -->
+        <!-- <script>
+        magnify("mag", 3);
+      </script> -->
+      </div>
+    </div>
+
+  </section>
+
+  <br><br><br>
+
+    <!-- Paper video.-->
+  <section>
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-three-fifths">
+        <h2 class="title is-3">Overview Video</h2>
+        <div class="publication-video" >
+          <iframe src="https://www.youtube.com/embed/KLGd7T76CBo" frameborder="10"
+            allow="autoplay; encrypted-media" width="100%"  allowfullscreen></iframe>
+        </div>
+
+      </div>
+    </div>
+  </section> 
+  <!-- / Paper video.   -->
+  <!--
+  <h3 class="title is-4 has-text-centered">Overview Video</h3>
+  <div class="content has-text-centered">
+    <div class="hero-body " padding=-10rem>
+      <div class="container">
+        <video id="replay-video" controls muted preload loop width="100%">
+          <source src="./static/videos/overview.mp4" type="video/mp4">
+        </video>
+        <br>
+        <br>
+        <br>
+        
+      </div>
+    </div>
+  </div>
+-->
+  
+
+
+  <!-- Model Zoo Info 
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-12">
+          <h2 class="title is-3 "> Model Zoo</h2>
+          <table style="margin-left:auto;margin-right:auto;">
+            <tr>
+              <th>Structure</th>
+              <th>1024x512</th>
+              <th>512x256</th>
+            </tr>
+            <tr>
+              <td>StyleGAN1</td>
+              <td>-->
+                <!-- <i class="fa fa-bars" aria-hidden="true"></i> &nbsp; 
+                <i class='fas fa-paw'></i> &nbsp;
+                <a href="https://drive.google.com/file/d/1h-R-IV-INGdPEzj4P9ml6JTEvihuNgLX/view?usp=sharing"
+                  target="_blank">
+                  stylegan_human_v1_1024.pkl </a>
+              </td>
+              <td> <i class="fa fa-hourglass-start" aria-hidden="true"></i> &nbsp; to be released</td>
+            </tr>
+            <tr>
+              <td>StyleGAN2</td>
+              <td>
+                <i class="fas fa-dog" aria-hidden="true"></i>&nbsp;-->
+                <!-- <i class="fa fa-bars" aria-hidden="true"></i>&nbsp;   
+                <a href="https://drive.google.com/file/d/1FlAb1rYa0r_--Zj_ML8e6shmaF28hQb5/view?usp=sharing"
+                  target="_blank"> stylegan_human_v2_1024.pkl</a>
+              </td>
+              <td>-->
+                <!-- <i class="fa fa-bars" aria-hidden="true"></i>&nbsp;   
+                <i class="fas fa-horse" aria-hidden="true"></i>&nbsp;
+                <a href="https://drive.google.com/file/d/1dlFEHbu-WzQWJl7nBBZYcTyo000H9hVm/view?usp=sharing"
+                  target="_blank"> stylegan_human_v2_512.pkl
+              </td>
+            </tr>
+            <tr>
+              <td>StyleGAN3</td>
+              <td> <i class="fa fa-hourglass-start" aria-hidden="true"></i> &nbsp; to be released</td>
+              <td>-->
+                <!-- <i class="fa fa-bars" aria-hidden="true"></i>&nbsp;  
+                <i class="fas fa-fish" aria-hidden="true"></i>&nbsp;
+                <a href="https://drive.google.com/file/d/1_274jk_N6WSCkKWeu7hjHycqGvbuOFf5/view?usp=sharing"
+                  target="_blank"> stylegan_human_v3_512.pkl</a>
+              </td>
+            </tr>
+          </table>
+  </section>
+-->
+
+  <!--
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3 has-text-centered">Downstream Applications</h2>
+  -->
+      <!-- Interpolating. 
+      <h3 class="title is-4 has-text-centered">Interpolating</h3>
+      <div class="columns-mid is-vcentered interpolation-panel">
+        <div class="column is-3 has-text-centered">
+          <img src='./static/images/seed0000.png' class="interpolation-image"
+            alt="Interpolate start reference image." />
+          <p>Start Frame</p>
+        </div>
+        <div class="column-mid interpolation-video-column center ">
+          <div id="interpolation-image-wrapper">
+            Loading...
+          </div>
+          <input class="slider-custom is-fullwidth-custom is-large is-info" id="interpolation-slider" step="1" min="1"
+            max="98" value="50" type="range">
+        </div>
+        <div class="column is-3 has-text-centered">
+          <img src='./static/images/seed0099.png' class="interpolation-image"
+            alt="Interpolation end reference image." />
+          <p class="is-bold">End Frame</p>
+        </div>
+      </div>
+      
+    -->
+      <br>
+      <br>
+      
+      <h2 class="title is-3 has-text-centered">Comparison Results in Sketch2Face, Segmentation2City and Pose2Body</h2>
+      <h3 class="title is-4 has-text-centered">From left to right: </h3>
+      <div class="text">  Segmantic Map| CA's results| CAT's results| NAS's results| Vid2Vid's results| Fast-Vid2Vid's results</div>
+
+      <br>
+      <br>
+
+      <h3 class="title is-4 has-text-centered">Sketch2Face</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <div id="results-carousel" class="carousel results-carousel">
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/face/in.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small"><br>Segmantic Maps</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/face/ca.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>CA</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/face/cat.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>CAT</div>
+              </div>
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/face/nas.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small"><br>NAS</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/face/vid2vid.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>Vid2Vid</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/face/fast.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>Fast-Vid2Vid</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br><br><br>
+
+      <h3 class="title is-4 has-text-centered">Segmentation2City</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <div id="results-carousel" class="carousel results-carousel">
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/city/in.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small"><br>Segmantic Maps</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/city/ca.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>CA</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/city/cat.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>CAT</div>
+              </div>
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/city/nas.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small"><br>NAS</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/city/vid2vid.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>Vid2Vid</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/city/fast.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>Fast-Vid2Vid</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <br><br><br>
+      <!--Attributes Editing -->
+      <h3 class="title is-4 has-text-centered">Pose2Body</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <div id="results-carousel" class="carousel results-carousel">
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/pose/in.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small"><br>Segmantic Maps</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/pose/ca.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>CA</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/pose/cat.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>CAT</div>
+              </div>
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/pose/nas.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small"><br>NAS</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/pose/vid2vid.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>Vid2Vid</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/pose/fast.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small"><br>Fast-Vid2Vid</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      
+
+ 
+      <!--
+      <h3 class="title is-4 has-text-centered">Sketch2Face</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <video id="replay-video" controls muted autoplay preload loop width="100%">
+              <source src="./static/videos/face_717.mp4" type="video/mp4">
+            </video>
+            <br>
+            <br>
+            <br>
+            
+          </div>
+        </div>
+      </div>
+      
+
+      <h3 class="title is-4 has-text-centered">Segmentation2City</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <video id="replay-video" controls muted autoplay preload loop width="100%">
+              <source src="./static/videos/city_64.mp4" type="video/mp4">
+            </video>
+            <br>
+            <br>
+            <br>
+            
+          </div>
+        </div>
+      </div>
+
+
+      <h3 class="title is-4 has-text-centered">Pose2Body</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <video id="replay-video" controls muted autoplay preload loop width="100%">
+              <source src="./static/videos/pose_19.mp4" type="video/mp4">
+            </video>
+            <br>
+            <br>
+            <br>
+            
+          </div>
+        </div>
+      </div>
+      -->
+
+      <!-- Style-Mixing  
+      
+      
+      
+      <div class="content has-text-justified">
+        <div class="slideshow-container">
+
+          <div class="mySlides fade">
+            <video id="replay-video" controls muted preload loop autoplay width="100%">
+              <source src="./static/videos/face_717.mp4" type="video/mp4">
+            </video>-->
+            <!-- <video id="replay-video" controls muted preload autoplay loop width="155%">
+            <source src="./static/videos/10x1-style-mixing_0_3_pose.mp4" type="video/mp4"></video> -->
+            <!-- <div class="numbertext">1 / 3</div> 
+            <br>
+            <div class="text"><b>Sketch2Face </b></div>
+          </div>
+
+          <div class="mySlides fade">
+            <video id="replay-video" controls muted preload loop autoplay width="100%">
+              <source src="./static/videos/city_64.mp4" type="video/mp4">
+            </video>-->
+            <!-- <video id="replay-video" controls muted preload autoplay loop width="155%">
+            <source src="./static/videos/10x1-style-mixing_5_9_clothingtype.mp4" type="video/mp4"></video>  -->
+            <!-- <div class="numbertext">2 / 3</div> 
+            <br>
+            <div class="text"><b>Segmentation2City </b></div>
+          </div>
+
+          <div class="mySlides fade">
+            <video id="replay-video" controls muted preload loop autoplay width="100%">
+              <source src="./static/videos/pose_19.mp4" type="video/mp4">
+            </video>-->
+            <!-- <video id="replay-video" controls muted preload autoplay loop width="155%">
+            <source src="./static/videos/10x1-style-mixing_10_17_clothingcolor.mp4" type="video/mp4"></video> -->
+            <!-- <div class="numbertext">3 / 3</div> 
+            <br>
+            <div class="text"><b>Pose2Body</b> </div>
+          </div>
+          <a class="prev" onclick="plusSlides(-1)">❮</a>
+          <a class="next" onclick="plusSlides(1)">❯</a>
+        </div>
+        <div style="text-align:center">
+          <span class="dot" onclick="currentSlide(1)"></span>
+          <span class="dot" onclick="currentSlide(2)"></span>
+          <span class="dot" onclick="currentSlide(3)"></span>
+        </div>
+      </div>
+      <script>
+        // https://stackoverflow.com/questions/47368940/css-slideshow-not-showing-image-until-clicked
+        let slideIndex = 1;
+        showSlides(slideIndex);
+      </script>
+      -->
+      <br>
+      <br>
+      
+      <!--Attributes Editing 
+      <h3 class="title is-4 has-text-centered">Attributes Editing with generated images</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <div id="results-carousel" class="carousel results-carousel">
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ss_upper_length_60948.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small">Change Upper length <br> (StyleSpace)</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ifg_upper_length_61531.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small">Change Upper length <br> (InterFaceGAN)</div>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ifg_bottom_length_61570.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small">Change Bottom length <br> (InterFaceGAN)</div>
+              </div>
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ss_upper_length_60965.mp4" type="video/mp4">
+                </video>
+                
+                <br>
+                <div class="text-small">Change Upper length <br> (StyleSpace)</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ss_upper_length_61064.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small">Change Upper length <br> (StyleSpace)</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ss_upper_length_61571.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small">Change Upper length <br> (StyleSpace)</div>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ss_upper_length_61610.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small">Change Upper length <br> (StyleSpace)</div>
+              </div>
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay loop width="100%">
+                  <source src="./static/videos/ss_bottom_length_61313.mp4" type="video/mp4">
+                </video>
+                <br>
+                <div class="text-small">Change Bottom length <br> (StyleSpace)</div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+      -->
+      <br>
+      <br>
+      <!--Attributes Editing 
+      <h3 class="title is-4 has-text-centered">Attributes Editing with an inverted real image</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <video id="replay-video" controls muted preload autoplay loop width="100%">
+              <source src="./static/videos/real_image_editing.mp4" type="video/mp4">
+            </video>
+            <br>
+            <div class="text">from left to right: Real image | Inverted image | InterFaceGAN | StyleSpace | SeFa</div>
+          </div>
+        </div>
+      </div>
+      -->
+
+
+      <br>
+      <br>
+      <!--InsetGAN  
+      <h3 class="title is-4 has-text-centered">InsetGAN</h3>
+      <div class="content has-text-centered">
+        <div class="hero-body " padding=-10rem>
+          <div class="container">
+            <div id="results-carousel" class="carousel results-carousel">
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay width="100%">
+                  <source src="./static/videos/0691_0684.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay width="100%">
+                  <source src="./static/videos/0705_41795.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item  ">
+                <video id="replay-video" controls muted preload autoplay width="100%">
+                  <source src="./static/videos/0713_56315.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video id="replay-video" controls muted preload autoplay width="100%">
+                  <source src="./static/videos/0748_41951.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay width="100%">
+                  <source src="./static/videos/0780_56243.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay width="100%">
+                  <source src="./static/videos/0821_89190.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item ">
+                <video id="replay-video" controls muted preload autoplay width="100%">
+                  <source src="./static/videos/0992_42067.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+            <br>
+            <div class="text">Starting with FFHQ faces and SHHQ bodies, we iteratively optimize both latent codes of
+              faces and bodies, and finally obtain coherent full-body images. </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+  -->
+  <!--/ Style-mixing -->
+  
+  <section class="section" id="Citaton">
+    <div class="container is-max-desktop content">
+      <h2 class="title">Related Links</h2>
+      <p><a href="https://https://github.com/NVIDIA/vid2vid">Vid2Vid Synthesis</a> proposes a large netowrk to syntheisize the videos using semantic sequences.</p>
+
+      <p><a href="https://github.com/lychenyoko/content-aware-gan-compression">CA Compression</a> compresses GAN by applying the salient content for pruning the unimportant architectures.</p>
+      <p><a href="https://github.com/snap-research/CAT">CAT Compression</a> proposes an efficient convoltional block and a new knowledge distillation approach for compressing the generator.</p>
+      <p><a href="https://github.com/mit-han-lab/gan-compression">NAS Compression</a> compresses GAN by adopting nerual architecture search techneque to select the most effective set of channels in each convolution layer.</p>
+      <!--
+      <p><a href="https://www.mmlab-ntu.com/project/talkedit/">Talk-to-Edit</a> proposes a StyleGAN-based method
+        and a multi-modal dataset for dialog-based facial editing.</p>
+      <p><a href="https://github.com/yumingj/DeepFashion-MultiModal">DeepFashion-MultiModal</a> is a large-scale
+        and high-quality human dataset with rich multi-modal annotations.</p>
+      <p><a href="https://hongfz16.github.io/projects/AvatarCLIP.html"> AvatarCLIP</a> proposes a zero-shot
+        text-driven framework for 3D avatar generation and animation</p>
+      -->
+    </div>
+  </section>
+  
+  <section class="section" id="Citaton">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{fu2022styleganhuman,
+      title={Fast-Vid2Vid: Spatial-Temporal Compression for Video-to-Video Synthesis},
+      author={Zhuo, Long and Wang, Guangcong and Li, Shikai and Wu, Wayne and Liu, Ziwei },
+      journal   = {arXiv preprint},
+      
+    }</code></pre>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <div class="logos">
+
+      <img class="thumbnail" src="static/images/shanghaiAILAB_up.jpeg" style="height:50px;">
+      <img class="thumbnail" src="static/images/NTU.png" style="height:50px;">
+      <img class="thumbnail" src="static/images/sensetime.jpeg" style="height:50px;">
+    </div>
+    <br>
+    <div class="columns is-centered">
+      <div class="content">
+        <p> Thanks to the great effort done by Nerfies' project, we borrow the website template from <a
+            href="https://github.com/nerfies/nerfies.github.io" target="_blank"> nerfies's webpage</a>. </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    $(window).on('load', function () {
+      $('#loading').hide();
+    })
+  </script>
+</body>
+
+</html>
